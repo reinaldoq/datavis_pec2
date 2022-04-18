@@ -1,0 +1,77 @@
+---
+title: "datavis_pec2"
+author: "Reinaldo Quintero"
+date: '2022-04-18'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+```
+
+# Sanky Diagram
+
+```{r}
+
+library('plotly')
+library("readxl")
+
+# df https://www.kaggle.com/datasets/arjunprasadsarkhel/2021-olympics-in-tokyo?resource=download
+df_medals <-read_excel("data/Medals.xlsx")
+
+fig <- plot_ly(
+    type = "sankey",
+    orientation = "h",
+
+    node = list(
+      label = c("United States of America", "People's Republic of China", "Japan", "Gold", "Silver", "Bronze"),
+      color = c("blue", "blue", "blue", "blue", "blue", "blue"),
+      pad = 15,
+      thickness = 20,
+      line = list(
+        color = "black",
+        width = 0.5
+      )
+    ),
+
+    link = list(
+      source = c(0, 0, 0, 1, 1, 1, 2, 2, 2),
+      target = c(3, 4, 5, 3, 4, 5, 3, 4, 5),
+      value =  c(39, 41, 33, 38, 32, 18, 27, 14, 17)
+    )
+  )
+
+fig <- fig %>% layout(
+    title = "Olympics - 2021: Country &  Medals",
+    font = list(
+      size = 10
+    ),
+    xaxis = list(showgrid = F, zeroline = F),
+    yaxis = list(showgrid = F, zeroline = F)
+  )
+
+fig
+```
+
+#  Force-Directed Graph
+
+```{r}
+
+library('networkD3')
+
+data("MisNodes")
+data('MisLinks')
+forceNetwork(Links = MisLinks, Nodes = MisNodes, Target = "target", NodeID = "name", Group = "group", opacity = 1, fontSize = 16, zoom = TRUE)
+```
+# Contour plot
+
+```{r}
+library(plotly)
+library(reshape2)
+df <- melt(volcano)
+p <- ggplot(df, aes(Var1, Var2, z= value)) +
+  stat_contour(geom="polygon",aes(fill=stat(level))) +
+  scale_fill_distiller(palette = "Spectral", direction = -1)
+ggplotly(p)
+```
+
